@@ -419,7 +419,7 @@ align: right;</string>
             </spacer>
            </item>
            <item>
-            <widget class="QDoubleSpinBox" name="doubleSpinBox"/>
+            <widget class="QDoubleSpinBox" name="inputVWC_dbSpinBox"/>
            </item>
           </layout>
          </item>
@@ -455,7 +455,7 @@ align: right;</string>
             </spacer>
            </item>
            <item>
-            <widget class="QLabel" name="fosResult_label">
+            <widget class="QLabel" name="label_17">
              <property name="text">
               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-weight:600; color:#0000ff;&quot;&gt;0.00&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
              </property>

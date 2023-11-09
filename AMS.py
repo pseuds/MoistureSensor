@@ -58,7 +58,7 @@ class AMS(MainWindow):
     def findFOSButton_clicked(self):
         #Laze change name fa
         print(self.x1, self.x2, self.y1, self.y2)
-        x_value = self.uiMain.doubleSpinBox.value()
+        x_value = self.uiMain.inputVWC_dbSpinBox.value()
         if x_value <= self.x1:
             y_value = self.y1
         elif x_value >= 0.5:
