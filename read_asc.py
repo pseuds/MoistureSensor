@@ -16,6 +16,8 @@ This is a temporary script file.
 # Define read ascii function
 import pandas as pd
 import math
+import numpy as np
+import matplotlib.pyplot as plt
 
 
 def read_asc_to_dataframe(asc_file):
@@ -58,11 +60,7 @@ for fos_file in FOS_folder:
     print(fos_file)
     k = read_asc_to_dataframe(root_folder + fos_file)
 
-    # currently 48hr file has error.
     # TODO: detect corrupt files & prompt error msg
-    # print(row_svy, column_svy) 
-    # print(len(k))              
-    # print(len(k.columns))      
 
     y = k.loc[row_svy, column_svy]
 
@@ -108,12 +106,27 @@ print('q is', q)
 print('')
 print('FS(real-time) =', m, '* VWC(real-time) +', q)
 
+# Step 6: Plotting the regression line
+x = [x_1hr_mean,x_24hr_mean,x_48hr_mean]
+y = extracted_y
+
 
 # plotting
 from matplotlib import pyplot as plt
 
-# plt.plot(X_avg, Y_avg)
-# plt.show()
+plt.plot(X_avg, Y_avg)
+plt.scatter(x, y, color='blue', label='Data Points')
+plt.plot(x, np.poly1d(np.polyfit(x, y, 1))(x), color='red', label='Regression Line')
+
+for i, j in zip(x, y):
+    plt.text(i, j, f'({i}, {j})', ha='right', va='bottom')
+
+# Set labels and title
+plt.xlabel('VWC')
+plt.ylabel('FOS')
+# plt.title('Correlation Coefficient (r): {:.2f}'.format(r))
+plt.show()
+plt.show()
 
 
 

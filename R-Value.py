@@ -40,20 +40,21 @@ print('VWC_column_index is', VWC_column_index)
 print('VWC_row_index is', VWC_row_index)
 
 #input by user
+root_folder = "COT Code backup/"
 VWC_folder = ['VWCL0001N0001.asc','VWCL0001N0024.asc','VWCL0001N0048.asc','VWCL0002N0001.asc','VWCL0002N0024.asc','VWCL0002N0048.asc','VWCL0003N0001.asc','VWCL0003N0024.asc','VWCL0003N0048.asc','VWCL0004N0001.asc','VWCL0004N0024.asc','VWCL0004N0048.asc','VWCL0005N0001.asc','VWCL0005N0024.asc','VWCL0005N0048.asc','VWCL0006N0001.asc','VWCL0006N0024.asc','VWCL0006N0048.asc']
 FOS_folder = ['jf20_gapfill_1hr.asc','jf20_gapfill_24hr.asc','jf20_gapfill_48hr.asc']
 extracted_x = []
 extracted_y = []
 
 for n in range(1,19):
-    asc_file = VWC_folder[n-1]
+    asc_file = root_folder + VWC_folder[n-1]
     k = read_asc_to_dataframe(asc_file)
     x = k.loc[VWC_row_index, VWC_column_index]
     extracted_x.append(x)
     #print(k)
     
 for n in range(1,4):
-    asc_file = FOS_folder[n-1]
+    asc_file = root_folder + FOS_folder[n-1]
     k = read_asc_to_dataframe(asc_file)
     x = k.loc[row_svy, column_svy]
     extracted_y.append(x)
