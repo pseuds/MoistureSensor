@@ -103,6 +103,8 @@ y = extracted_y
 #Calculating correlation factor
 r = np.corrcoef(x, y)[0, 1]
 
+bestfit_slope, bestfit_intercept = np.polyfit(x, y, 1)
+
 plt.scatter(x, y, color='blue', label='Data Points')
 plt.plot(x, np.poly1d(np.polyfit(x, y, 1))(x), color='red', label='Regression Line')
 
@@ -126,3 +128,5 @@ print('q is', q)
 print('')
 print('FS(real-time) =', m, '* VWC(real-time) +', q)
 print("Correlation coefficient, r:", r)
+
+print("m vs bestfit", m, bestfit_slope)

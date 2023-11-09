@@ -12,15 +12,15 @@ def read_asc_to_dataframe(asc_file):
     df.columns = range(len(df.columns))  # Assign column names as numbers
     return df
 
-def gorun():
+def gorun(ref_pt_x, ref_pt_y, sensor_svy_x, sensor_svy_y):
 
     # how to convert lat & lng, need to find out
-    ref_pt_x = 24483.000000  # [for user input] coordinates of reference left corner pixel
-    ref_pt_y = 28694.204819
+    # ref_pt_x = 24483.000000  # [for user input] coordinates of reference left corner pixel
+    # ref_pt_y = 28694.204819
     nrow = 3175              # [for user input] total number of rows in the FOS ascii file
                             # TODO: this should depend on the .asc file !
 
-    sensor_svy_x,sensor_svy_y = 27060.6, 29743.263 # [for user input] svy21 coordinates of point of interest
+    # sensor_svy_x,sensor_svy_y = 27060.6, 29743.263 # [for user input] svy21 coordinates of point of interest
 
     # Step 1: Extracting x and y values from ascii files
     column_svy = math.ceil(sensor_svy_x - ref_pt_x)
@@ -80,7 +80,6 @@ def gorun():
     # TODO: verify formulae below (check any assumptions)
     m_top = ( (x_1hr_mean - X_avg)*(extracted_y[0] - Y_avg) + (x_24hr_mean - X_avg)*(extracted_y[1] - Y_avg) + (x_48hr_mean - X_avg)*(extracted_y[2] - Y_avg) )
     m_btm = ( (x_1hr_mean - X_avg)**2 + (x_24hr_mean - X_avg)**2 + (x_48hr_mean - X_avg)**2)
-    # 48hr file corrupted! skip for now
 
     m = m_top/m_btm
 
@@ -97,14 +96,13 @@ def gorun():
 
     # Step 6: Plotting the regression line
     x = [0.3, x_1hr_mean,x_24hr_mean,x_48hr_mean, 0.5,  0.6]
-    print("two values", m*0.46+q, m*0.25+q)
-
     midpoint_y = m*0.5+q
     y = [extracted_y[0]] + extracted_y + [midpoint_y]*2
 
+    r = np.corrcoef(x[1:4], y[1:4])[0, 1]
 
     # plotting
-    from matplotlib import pyplot as plt
+    # from matplotlib import pyplot as plt
     plt.plot(x,y, color = 'red', label = "Z line")
     # plt.plot(X_avg, Y_avg)
     # plt.scatter(x, y, color='blue', label='Data Points')
@@ -122,6 +120,8 @@ def gorun():
     plt.cla()
     # plt.show()
 
+
+    return m, q, x_1hr_mean, x_48hr_mean, extracted_y[0], midpoint_y, r**2, X_avg
 
 
 

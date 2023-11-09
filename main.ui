@@ -180,7 +180,7 @@
               <number>3</number>
              </property>
              <property name="maximum">
-              <double>9999.000000000000000</double>
+              <double>9999999.000000000000000</double>
              </property>
             </widget>
            </item>
@@ -222,7 +222,7 @@
               <number>3</number>
              </property>
              <property name="maximum">
-              <double>9999.000000000000000</double>
+              <double>9999999.000000000000000</double>
              </property>
              <property name="singleStep">
               <double>0.000100000000000</double>
@@ -275,7 +275,7 @@
               <number>3</number>
              </property>
              <property name="maximum">
-              <double>9999.000000000000000</double>
+              <double>9999999.000000000000000</double>
              </property>
             </widget>
            </item>
@@ -311,7 +311,7 @@
               <number>3</number>
              </property>
              <property name="maximum">
-              <double>9999.000000000000000</double>
+              <double>9999999.000000000000000</double>
              </property>
             </widget>
            </item>
@@ -455,7 +455,7 @@ align: right;</string>
             </spacer>
            </item>
            <item>
-            <widget class="QLabel" name="label_17">
+            <widget class="QLabel" name="fosResult_label">
              <property name="text">
               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-weight:600; color:#0000ff;&quot;&gt;0.00&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
              </property>
@@ -713,7 +713,7 @@ align: right;</string>
             </spacer>
            </item>
            <item>
-            <widget class="QLabel" name="label_15">
+            <widget class="QLabel" name="vwcResult_label">
              <property name="mouseTracking">
               <bool>true</bool>
              </property>
