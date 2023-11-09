@@ -2,6 +2,10 @@ import sys, math
 from main_Window import MainWindow
 from PyQt5 import QtCore, QtWidgets
 from PyQt5.QtCore import QObject, QThread, pyqtSignal
+from read_asc import *
+from PyQt5.QtGui import QPixmap
+
+#TODO Got some unknown property align whenever running the gui
 
 class AMS(MainWindow):
     def __init__(self, parent):
@@ -16,6 +20,11 @@ class AMS(MainWindow):
     #------------ BUTTON CLICKS ------------ #
 
     def calculateButton_clicked(self):
+
+        gorun()
+        #TODO Make picture size better idk help plsssssss
+        self.uiMain.graphResult_label.setPixmap(QPixmap("Z_plot.png").scaled(1200, 375, QtCore.Qt.KeepAspectRatio, QtCore.Qt.SmoothTransformation))
+
         pass
 
     def openFolderButton_clicked(self):
