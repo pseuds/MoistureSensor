@@ -6,6 +6,7 @@ from read_asc import *
 from PyQt5.QtGui import QPixmap
 
 #TODO Got some unknown property align whenever running the gui
+# ignoring it until theres visible error in the GUI.
 
 class AMS(MainWindow):
     def __init__(self, parent):
@@ -21,30 +22,32 @@ class AMS(MainWindow):
     #------------ BUTTON CLICKS ------------ #
 
     def calculateButton_clicked(self):
+        self.uiMain.calculate_Button.setEnabled(False) # disable button to prevent spamming
+        self.uiMain.find_point_Button.setEnabled(False)
+        self.uiMain.statusbar.showMessage("Calculating...")
 
-        #get inputs:
-        zone = self.uiMain.zoneNo_spinBox.value()
-        slopex = self.uiMain.xslope_dbSpinBox.value()
-        slopey = self.uiMain.yslope_dbSpinBox.value()
-        sensorx = self.uiMain.xsensor_dbSpinbox.value()
-        sensory = self.uiMain.ysensor_dbSpinBox.value()
-        
-        # Running
-        self.m, self.q , self.x1, self.x2, self.y1, self.y2, rsquared, vwc = gorun(slopex, slopey, sensorx, sensory)
+        # Check if source folder has required data
+        fail, missing_file = self.check_folder()
 
+        if not fail:
 
-        # Outputs
-        self.uiMain.gradientResult_label.setText(str(self.m))
-        self.uiMain.interceptResult_label.setText(str(self.q))
-        self.uiMain.r2Result_label.setText(str(rsquared))
-        self.uiMain.vwcResult_label.setText(str(vwc))
-        
+            fail_calc = self.calculate_and_display()
+            
+            if fail_calc:
+                self.uiMain.statusbar.showMessage("Calculation failed. See console log for details.")
+                self.dialog_failed_calc()
 
-        
-        #TODO Make picture size better idk help plsssssss
-        self.uiMain.graphResult_label.setPixmap(QPixmap("Z_plot.png").scaled(1200, 375, QtCore.Qt.KeepAspectRatio, QtCore.Qt.SmoothTransformation))
+            else: # calculation is successful
+                self.uiMain.statusbar.showMessage("Calculation success.")
+                self.uiMain.graphResult_label.setPixmap(QPixmap("assets/Z_plot.png").scaled(1200, 400, QtCore.Qt.KeepAspectRatio, QtCore.Qt.SmoothTransformation))
+                self.enable_findFromGraph()
 
-        pass
+        else: # cannot calculate due to missing data. show relevant error popup.
+            self.uiMain.statusbar.showMessage("Calculation failed. Missing input data.")
+            self.dialog_bad_source_folder(fail, missing_file)
+
+        self.uiMain.calculate_Button.setEnabled(True) # reenable button when done
+        self.uiMain.find_point_Button.setEnabled(True) 
 
     def openFolderButton_clicked(self):
         success = self.open_folder()
@@ -66,7 +69,7 @@ class AMS(MainWindow):
         else:
             y_value = self.m * x_value + self.q
 
-        self.uiMain.fosResult_label.setText(str(y_value))
+        self.uiMain.fosResult_label.setText(self.make_bold_blue(str(round(y_value,3))))
 
         pass
 

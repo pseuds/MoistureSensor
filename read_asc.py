@@ -7,54 +7,57 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
-def read_asc_to_dataframe(asc_file):
-    df = pd.read_csv(asc_file, delimiter=' ', skiprows=6, header=None)
-    df.columns = range(len(df.columns))  # Assign column names as numbers
+def read_asc_to_dataframe(asc_file, first_6=False):
+    # read the first 6 rows
+    if first_6:
+        df = pd.read_csv(asc_file, nrows=6, delim_whitespace=True, header=None)
+    else: # read the body
+        df = pd.read_csv(asc_file, delimiter=' ', skiprows=6, header=None)
+        df.columns = range(len(df.columns))  # Assign column names as numbers
     return df
 
-def gorun(ref_pt_x, ref_pt_y, sensor_svy_x, sensor_svy_y):
+def gorun(source_folder, zone, VWC_files, FOS_files, ref_pt_x, ref_pt_y, sensor_svy_x, sensor_svy_y):
 
-    # how to convert lat & lng, need to find out
-    # ref_pt_x = 24483.000000  # [for user input] coordinates of reference left corner pixel
-    # ref_pt_y = 28694.204819
-    nrow = 3175              # [for user input] total number of rows in the FOS ascii file
-                            # TODO: this should depend on the .asc file !
+    # get dir of data
+    FOS_paths = [f"{source_folder}/JF{zone}/FOS/{fos}" for fos in FOS_files]
+    VWC_paths = [f"{source_folder}/JF{zone}/VWC/{vwc}" for vwc in VWC_files]
 
-    # sensor_svy_x,sensor_svy_y = 27060.6, 29743.263 # [for user input] svy21 coordinates of point of interest
+    # get nrows from any FOS file
+    df_first6 = read_asc_to_dataframe(FOS_paths[0], first_6=True) 
+    nrow = int(df_first6.loc[1,1]) 
 
     # Step 1: Extracting x and y values from ascii files
     column_svy = math.ceil(sensor_svy_x - ref_pt_x)
-    row_svy = nrow - math.ceil(sensor_svy_y - ref_pt_y)
+    row_svy = nrow - math.ceil(sensor_svy_y - ref_pt_y)  
 
     VWC_column_index = math.ceil(column_svy/5) - 1 
-    VWC_row_index = math.ceil(row_svy/5)
+    VWC_row_index = math.ceil(row_svy/5) 
 
-    root_folder = "COT Code backup/"
-    VWC_folder = ['VWCL0001N0001.asc','VWCL0001N0024.asc','VWCL0001N0048.asc','VWCL0002N0001.asc','VWCL0002N0024.asc','VWCL0002N0048.asc','VWCL0003N0001.asc','VWCL0003N0024.asc','VWCL0003N0048.asc','VWCL0004N0001.asc','VWCL0004N0024.asc','VWCL0004N0048.asc','VWCL0005N0001.asc','VWCL0005N0024.asc','VWCL0005N0048.asc','VWCL0006N0001.asc','VWCL0006N0024.asc','VWCL0006N0048.asc']
-    FOS_folder = ['jf20_gapfill_1hr.asc','jf20_gapfill_24hr.asc','jf20_gapfill_48hr.asc'] 
     extracted_x = []
     extracted_y = []
     
-    # when defining root folder, check if root folder has VWC & FOS folder (check by specific folder name)
-    # create a dict/list for both VWC & FOS (similar to above)
-    # if either folder empty, prompt msg ("Input data not available.")
 
-    for asc_file in VWC_folder:
-        k = read_asc_to_dataframe(root_folder + asc_file)
-        x = k.loc[VWC_row_index, VWC_column_index]
-        extracted_x.append(x)
-        #print(k)
+    for vwc_path in VWC_paths:
+        k = read_asc_to_dataframe(vwc_path)
+        try: 
+            x = k.loc[VWC_row_index, VWC_column_index]
+            extracted_x.append(x)
+        except Exception as e:
+            print(f"Exception occurred when reading {vwc_path}: {e}")
+            print(f"df dimensions:{len(k)}, {len(k.columns)}")
+            print(f"index to read:{VWC_row_index}, {VWC_column_index}")
+            return None
         
-    for fos_file in FOS_folder:
-        print(fos_file)
-        k = read_asc_to_dataframe(root_folder + fos_file)
-
-        # TODO: detect corrupt files & prompt error msg
-
-        y = k.loc[row_svy, column_svy]
-
-        extracted_y.append(y)
-
+    for fos_path in FOS_paths:
+        k = read_asc_to_dataframe(fos_path)
+        try:
+            y = k.loc[row_svy, column_svy]
+            extracted_y.append(y)
+        except Exception as e:
+            print(f"Exception occurred when reading {fos_path}: {e}")
+            print(f"df dimensions:{len(k)}, {len(k.columns)}")
+            print(f"index to read:{row_svy}, {column_svy}")
+            return None
 
     x_1hr_i = [0,3,6,9,12,15]
     x_24hr_i = [1,4,7,10,13,16]
@@ -116,10 +119,9 @@ def gorun(ref_pt_x, ref_pt_y, sensor_svy_x, sensor_svy_y):
     plt.ylabel('FOS')
     # plt.title('Correlation Coefficient (r): {:.2f}'.format(r))
     # plt.show()
-    plt.savefig('Z_plot.png', format='png')
+    plt.savefig('assets/Z_plot.png', format='png')
     plt.cla()
     # plt.show()
-
 
     return m, q, x_1hr_mean, x_48hr_mean, extracted_y[0], midpoint_y, r**2, X_avg
 
