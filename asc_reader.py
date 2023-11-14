@@ -8,6 +8,15 @@ import matplotlib
 import matplotlib.pyplot as plt
 from PyQt5.QtCore import QObject, QThread, pyqtSignal
 
+def read_asc_to_dataframe(asc_file, first_6=False):
+    # read the first 6 rows
+    if first_6:
+        df = pd.read_csv(asc_file, nrows=6, delim_whitespace=True, header=None)
+    else: # read the body
+        df = pd.read_csv(asc_file, delimiter=' ', skiprows=6, header=None)
+        df.columns = range(len(df.columns))  # Assign column names as numbers
+    return df
+
 class Calculator(QObject):
     finished = pyqtSignal(int)
     progress = pyqtSignal(int)
