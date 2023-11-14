@@ -72,6 +72,8 @@ class MainWindow(QMainWindow):
                         if not fos in fos_contents:
                             return 1, fos
                         
+                        #change reading part if first 6 rows info are not avaliable 
+                        
                         df_first6 = read_asc_to_dataframe(f"{self.source_folder}/JF{zone}/FOS/{fos}", first_6=True)
                         nrow = int(df_first6.loc[1,1])
                         ncol = int(df_first6.loc[0,1])
@@ -81,6 +83,8 @@ class MainWindow(QMainWindow):
                     for vwc in self.VWC_required:
                         if not vwc in vwc_contents:
                             return 1, vwc
+                        
+                        #change reading part if first 6 rows info are not avaliable 
                         
                         df_first6 = read_asc_to_dataframe(f"{self.source_folder}/JF{zone}/VWC/{vwc}", first_6=True)
                         nrow = int(df_first6.loc[1,1])
