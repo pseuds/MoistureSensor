@@ -58,10 +58,15 @@ class MainWindow(QMainWindow):
                         if not fos in fos_contents:
                             return 1, fos
                         
-                        #change reading part if first 6 rows info are not avaliable 
+                        #change reading part if first 6 rows info are not avaliable
+                        # df = pd.read_csv(f"{self.source_folder}/JF{zone}/FOS/{fos}", delimiter=' ', header=None)
+                        # nrow = int(df.loc[1,1])
+                        # ncol = int(df.loc[0,1])
+
                         df_first6 = read_asc_to_dataframe(f"{self.source_folder}/JF{zone}/FOS/{fos}", first_6=True)
                         nrow = int(df_first6.loc[1,1])
                         ncol = int(df_first6.loc[0,1])
+
                         fos_row_counts[fos] = nrow
                         fos_col_counts[fos] = ncol
                         
@@ -69,10 +74,15 @@ class MainWindow(QMainWindow):
                         if not vwc in vwc_contents:
                             return 1, vwc
                         
-                        #change reading part if first 6 rows info are not avaliable 
+                        #change reading part if first 6 rows info are not avaliable
+                        # df = pd.read_csv(f"{self.source_folder}/JF{zone}/VWC/{vwc}", delimiter=' ', hseader=None)
+                        # nrow = int(df.loc[1,1])
+                        # ncol = int(df.loc[0,1])
+
                         df_first6 = read_asc_to_dataframe(f"{self.source_folder}/JF{zone}/VWC/{vwc}", first_6=True)
                         nrow = int(df_first6.loc[1,1])
                         ncol = int(df_first6.loc[0,1])
+                        
                         vwc_row_counts[vwc] = nrow
                         vwc_col_counts[vwc] = ncol
 
