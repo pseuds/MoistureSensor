@@ -35,23 +35,13 @@ class Calculator(QObject):
 
         self.count = 0 # count progress
 
-    def read_asc_to_dataframe(self, asc_file, first_6=False):
-        # read the first 6 rows
-        if first_6:
-            df = pd.read_csv(asc_file, nrows=6, delim_whitespace=True, header=None)
-        else: # read the body
-            df = pd.read_csv(asc_file, delimiter=' ', skiprows=6, header=None)
-            df.columns = range(len(df.columns))  # Assign column names as numbers
-        return df
-
     def run(self):
-
         # get dir of data
         FOS_paths = [f"{self.source_folder}/JF{self.zone}/FOS/{fos}" for fos in self.FOS_files]
         VWC_paths = [f"{self.source_folder}/JF{self.zone}/VWC/{vwc}" for vwc in self.VWC_files]
 
         # get nrows from any FOS file
-        df_first6 = self.read_asc_to_dataframe(FOS_paths[0], first_6=True) 
+        df_first6 = read_asc_to_dataframe(FOS_paths[0], first_6=True) 
         nrow = int(df_first6.loc[1,1]) 
 
         self.count += 1
@@ -68,7 +58,7 @@ class Calculator(QObject):
         extracted_y = []
         
         for vwc_path in VWC_paths:
-            k = self.read_asc_to_dataframe(vwc_path)
+            k = read_asc_to_dataframe(vwc_path)
             try: 
                 x = k.loc[VWC_row_index, VWC_column_index]
                 extracted_x.append(x)
@@ -83,7 +73,7 @@ class Calculator(QObject):
                 return None
             
         for fos_path in FOS_paths:
-            k = self.read_asc_to_dataframe(fos_path)
+            k = read_asc_to_dataframe(fos_path)
             try:
                 y = k.loc[row_svy, column_svy]
                 extracted_y.append(y)
