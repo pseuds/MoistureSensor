@@ -4,6 +4,7 @@ from PyQt5.QtCore import QUrl
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtWidgets import QMainWindow, QDesktopWidget, QFileDialog, QMessageBox, QTableWidgetItem
 from PIL import Image
+from asc_reader import *
 from main_UI import Ui_MainWindow
 
 
@@ -38,6 +39,10 @@ class MainWindow(QMainWindow):
 
     def check_folder(self):
         zone = self.get_zone()
+
+        fos_row_counts, fos_col_counts = {}, {}
+        vwc_row_counts, vwc_col_counts = {}, {}
+
         if self.source_folder != "": 
             root_contents = os.listdir(self.source_folder)
             if f"JF{zone}" in root_contents:
@@ -53,10 +58,44 @@ class MainWindow(QMainWindow):
                         if not fos in fos_contents:
                             return 1, fos
                         
+                        #change reading part if first 6 rows info are not avaliable 
+                        df_first6 = read_asc_to_dataframe(f"{self.source_folder}/JF{zone}/FOS/{fos}", first_6=True)
+                        nrow = int(df_first6.loc[1,1])
+                        ncol = int(df_first6.loc[0,1])
+                        fos_row_counts[fos] = nrow
+                        fos_col_counts[fos] = ncol
+                        
                     for vwc in self.VWC_required:
                         if not vwc in vwc_contents:
                             return 1, vwc
                         
+                        #change reading part if first 6 rows info are not avaliable 
+                        df_first6 = read_asc_to_dataframe(f"{self.source_folder}/JF{zone}/VWC/{vwc}", first_6=True)
+                        nrow = int(df_first6.loc[1,1])
+                        ncol = int(df_first6.loc[0,1])
+                        vwc_row_counts[vwc] = nrow
+                        vwc_col_counts[vwc] = ncol
+
+                    
+                    #checking max
+                    max_fos_rows = max(fos_row_counts.values())
+                    max_fos_cols = max(fos_col_counts.values())
+                    max_vwc_rows = max(vwc_row_counts.values())
+                    max_vwc_cols = max(vwc_col_counts.values())
+
+                    #checking not equal rows and cols for each fos and vwc files
+                    fos_problems_rows = [filename for filename, count in fos_row_counts.items() if count != max_fos_rows]
+                    fos_problems_col = [filename for filename, count in fos_col_counts.items() if count != max_fos_cols]
+                    vwc_problems_rows = [filename for filename, count in vwc_row_counts.items() if count != max_vwc_rows]
+                    vwc_problems_col = [filename for filename, count in vwc_col_counts.items() if count != max_vwc_cols]
+
+                    if fos_problems_col or fos_problems_rows or vwc_problems_rows or vwc_problems_col:
+                        return 4, ', '.join(fos_problems_rows + fos_problems_col + vwc_problems_rows + vwc_problems_col)
+                    
+                    if (max_fos_cols != max_vwc_cols*5) or (max_fos_rows != max_vwc_rows*5):
+                        return 5, ''
+                    
+                    print("ALL good")
                     return 0, ''
                 
                 else: # if JF{zone} does not have both FOS or VWC
@@ -65,8 +104,9 @@ class MainWindow(QMainWindow):
                 
             else: # if source folder does not have JF{zone}
                 return 3, f"JF{zone}"
+            
         else: # user did not select source folder
-            return 4, ''
+            return 6, ''
         
     def dialog_bad_source_folder(self, code, missing=''):
         if code == 1:
@@ -76,6 +116,10 @@ class MainWindow(QMainWindow):
         elif code == 3:
             error_text = f"The following folder could not be found: {missing}.\n\nPlease make sure the folder you choose contains the required JF folder."
         elif code == 4:
+            error_text = f"There is missing data in the {missing} files"
+        elif code == 5:
+            error_text = f"The number of data in the FOS asc file and the VWC asc file do not match multiples of 5"
+        elif code == 6:
             error_text = f"No source folder selected.\n\nPlease select a folder containing relevant data inputs."
         
         error_MsgBox = QMessageBox(self)
