@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1000</width>
-    <height>656</height>
+    <width>942</width>
+    <height>693</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -27,7 +27,7 @@
         </property>
         <property name="maximumSize">
          <size>
-          <width>360</width>
+          <width>500</width>
           <height>16777215</height>
          </size>
         </property>
@@ -93,13 +93,13 @@
         </property>
         <property name="minimumSize">
          <size>
-          <width>300</width>
+          <width>450</width>
           <height>0</height>
          </size>
         </property>
         <property name="maximumSize">
          <size>
-          <width>360</width>
+          <width>500</width>
           <height>16777215</height>
          </size>
         </property>
@@ -220,7 +220,7 @@
             <widget class="QDoubleSpinBox" name="xslope_dbSpinBox">
              <property name="minimumSize">
               <size>
-               <width>70</width>
+               <width>75</width>
                <height>0</height>
               </size>
              </property>
@@ -278,7 +278,7 @@
             <widget class="QDoubleSpinBox" name="yslope_dbSpinBox">
              <property name="minimumSize">
               <size>
-               <width>70</width>
+               <width>75</width>
                <height>0</height>
               </size>
              </property>
@@ -349,7 +349,7 @@
             <widget class="QDoubleSpinBox" name="xsensor_dbSpinbox">
              <property name="minimumSize">
               <size>
-               <width>70</width>
+               <width>75</width>
                <height>0</height>
               </size>
              </property>
@@ -410,7 +410,7 @@
             <widget class="QDoubleSpinBox" name="ysensor_dbSpinBox">
              <property name="minimumSize">
               <size>
-               <width>70</width>
+               <width>75</width>
                <height>0</height>
               </size>
              </property>
@@ -469,13 +469,13 @@
             <widget class="QLabel" name="sourceFolder_display">
              <property name="minimumSize">
               <size>
-               <width>150</width>
+               <width>250</width>
                <height>25</height>
               </size>
              </property>
              <property name="maximumSize">
               <size>
-               <width>150</width>
+               <width>250</width>
                <height>16777215</height>
               </size>
              </property>
@@ -515,16 +515,68 @@ border: 0.5px solid rgb(210, 210, 210);</string>
           </layout>
          </item>
          <item>
-          <widget class="QPushButton" name="calculate_Button">
-           <property name="font">
-            <font>
-             <pointsize>9</pointsize>
-            </font>
+          <spacer name="verticalSpacer_4">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
            </property>
-           <property name="text">
-            <string>Calculate</string>
+           <property name="sizeType">
+            <enum>QSizePolicy::Fixed</enum>
            </property>
-          </widget>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>7</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_8">
+           <item>
+            <spacer name="horizontalSpacer_19">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>40</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+           <item>
+            <widget class="QPushButton" name="calculate_Button">
+             <property name="minimumSize">
+              <size>
+               <width>125</width>
+               <height>0</height>
+              </size>
+             </property>
+             <property name="font">
+              <font>
+               <pointsize>9</pointsize>
+              </font>
+             </property>
+             <property name="text">
+              <string>Calculate</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <spacer name="horizontalSpacer_20">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>40</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+          </layout>
          </item>
          <item>
           <spacer name="verticalSpacer">
@@ -687,7 +739,7 @@ border: 0.5px solid rgb(210, 210, 210);</string>
          <bool>true</bool>
         </property>
         <property name="sizePolicy">
-         <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+         <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
           <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
@@ -700,7 +752,7 @@ border: 0.5px solid rgb(210, 210, 210);</string>
         </property>
         <property name="maximumSize">
          <size>
-          <width>360</width>
+          <width>500</width>
           <height>200</height>
          </size>
         </property>
@@ -1099,8 +1151,8 @@ border: 0.5px solid rgb(210, 210, 210);</string>
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1000</width>
-     <height>21</height>
+     <width>942</width>
+     <height>26</height>
     </rect>
    </property>
   </widget>

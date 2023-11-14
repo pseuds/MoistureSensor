@@ -2,7 +2,8 @@ import sys, math
 from main_Window import MainWindow
 from PyQt5 import QtCore, QtWidgets
 from PyQt5.QtCore import QObject, QThread, pyqtSignal
-from read_asc import *
+from asc_reader import Calculator
+from progress_dialog import ProgressDialog
 from PyQt5.QtGui import QPixmap
 
 #TODO Got some unknown property align whenever running the gui
@@ -13,6 +14,7 @@ class AMS(MainWindow):
         super(AMS, self).__init__(parent)
 
         # connect buttons
+        # self.uiMain.calculate_Button.clicked.connect(self.calculateButton_clicked)
         self.uiMain.calculate_Button.clicked.connect(self.calculateButton_clicked)
         self.uiMain.openFolder_Button.clicked.connect(self.openFolderButton_clicked)
         self.uiMain.find_point_Button.clicked.connect(self.findFOSButton_clicked)
@@ -22,32 +24,44 @@ class AMS(MainWindow):
     #------------ BUTTON CLICKS ------------ #
 
     def calculateButton_clicked(self):
-        self.uiMain.calculate_Button.setEnabled(False) # disable button to prevent spamming
-        self.uiMain.find_point_Button.setEnabled(False)
-        self.uiMain.statusbar.showMessage("Calculating...")
-
         # Check if source folder has required data
         fail, missing_file = self.check_folder()
 
         if not fail:
+            self.thread = QThread()
+            self.worker = Calculator(
+                self.source_folder, self.get_zone(), self.VWC_required, self.FOS_required, 
+                self.get_slopex(), self.get_slopey(), self.get_sensorx(), self.get_sensory()
+            )
+            self.worker.moveToThread(self.thread)
 
-            fail_calc = self.calculate_and_display()
+            self.total_count = len(self.VWC_required) + len(self.FOS_required) + 2
+            self.progress_bar = ProgressDialog(self)
+            self.progress_bar.ui.progress_label.setText("Initialising...")
+
+            # connect signals
+            self.thread.started.connect(self.start_progress_dialog)
+            self.thread.started.connect(self.worker.run)
+            self.worker.finished.connect(self.thread.quit)
+            self.worker.finished.connect(self.worker.deleteLater)
+            self.thread.finished.connect(self.thread.deleteLater)
+            self.worker.progress.connect(self.report_progress)
             
-            if fail_calc:
-                self.uiMain.statusbar.showMessage("Calculation failed. See console log for details.")
-                self.dialog_failed_calc()
+            # start thread
+            self.uiMain.calculate_Button.setEnabled(False)
+            self.uiMain.find_point_Button.setEnabled(False)
+            self.thread.start()
 
-            else: # calculation is successful
-                self.uiMain.statusbar.showMessage("Calculation success.")
-                self.uiMain.graphResult_label.setPixmap(QPixmap("assets/Z_plot.png").scaled(1200, 400, QtCore.Qt.KeepAspectRatio, QtCore.Qt.SmoothTransformation))
-                self.enable_findFromGraph()
-
+            # when complete
+            self.worker.finished.connect(self.report_final_progress)
+            self.worker.result_values.connect(self.display_results)
+            self.thread.finished.connect(lambda: self.uiMain.calculate_Button.setEnabled(True))
+            self.thread.finished.connect(lambda: self.uiMain.find_point_Button.setEnabled(True))
+            self.thread.finished.connect(self.progress_bar.accept)
+        
         else: # cannot calculate due to missing data. show relevant error popup.
             self.uiMain.statusbar.showMessage("Calculation failed. Missing input data.")
             self.dialog_bad_source_folder(fail, missing_file)
-
-        self.uiMain.calculate_Button.setEnabled(True) # reenable button when done
-        self.uiMain.find_point_Button.setEnabled(True) 
 
     def openFolderButton_clicked(self):
         success = self.open_folder()
