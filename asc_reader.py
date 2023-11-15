@@ -37,11 +37,11 @@ class Calculator(QObject):
 
     def run(self):
         # get dir of data
-        FOS_paths = [f"{self.source_folder}/JF{self.zone}/FOS/{fos}" for fos in self.FOS_files]
-        VWC_paths = [f"{self.source_folder}/JF{self.zone}/VWC/{vwc}" for vwc in self.VWC_files]
+        FOS_paths = [f"{self.source_folder}/{self.zone}/FOS/{fos}" for fos in self.FOS_files]
+        VWC_paths = [f"{self.source_folder}/{self.zone}/VWC/{vwc}" for vwc in self.VWC_files]
 
         # get nrows from any FOS file
-        df_first6 = read_asc_to_dataframe(FOS_paths[0], first_6=True) 
+        df_first6 = read_asc_to_dataframe(FOS_paths[0], first_6=True)
         nrow = int(df_first6.loc[1,1]) 
 
         self.count += 1

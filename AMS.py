@@ -21,6 +21,8 @@ class AMS(MainWindow):
 
         self.show()
 
+
+
     #------------ BUTTON CLICKS ------------ #
 
     def calculateButton_clicked(self):
