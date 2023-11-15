@@ -17,8 +17,6 @@ class MainWindow(QMainWindow):
         self.centerOnScreen()
         self.setMaximumSize(1200, 800)
 
-        self.initialise()
-
         self.source_folder = ""    # root folder that the user chose to read from
         self.VWC_required = [ # all {zone} folders should have these
             'VWCL0001N0001.asc','VWCL0001N0024.asc','VWCL0001N0048.asc',
@@ -29,9 +27,25 @@ class MainWindow(QMainWindow):
             'VWCL0006N0001.asc','VWCL0006N0024.asc','VWCL0006N0048.asc'
             ]
         
-        #
-        # self.zone_ls = 
+        self.zone_ls = [
+            "BT1", "BT2", "BT3", "BT4", "BT5", "BT6", "BT7", "BT8", "BT9", "BT10", 
+            "BT11", "BT12", "BT13", "BT14", "BT15", "BT16", "BT17", "BT18", "BT19", "BT20", 
+            "BT21", "BT22", "BT23", "BT24", "BT25", "BT26", "BT27a", "BT27b", "BT28", "BT29", "BT30a", 
+            "BT30b", "BT31", "BT32", "BT33", "BT34", "BT35", "BT36", "BT37" "BT38", "BT39", "BT40", 
+            "BT41", "BT42", "BT43", "BT44",
+                        
+            "JF1", "JF2a", "JF2b", "JF3a", "JF3b", "JF4", "JF5", "JF6a", "JF6b", "JF7", "JF8", "JF9", "JF10",
+            "JF11", "JF12", "JF13", "JF14", "JF15", "JF16", "JF17", "JF18", "JF19", "JF20", 
+            "JF21", "JF22", "JF23",
+
+            "KF1", "KF2", "KF3", "KF4", "KF5", "KF6", "KF7", "KF8", "KF9a", "KF9b",
+            
+            "OA1", "OA2", "OA3a", "OA3b", "OA4", "OA5", "OA6", "OA7", "OA8", "OA9", "OA10", 
+            "OA11", "OA12", "OA13", "OA14a", "OA14b", "OA15", "OA16", "OA17", "OA18", "OA19a", "OA19b", "OA20", 
+            "OA21"
+            ]
         
+        self.initialise()
     
         self.progress_bar = None
 
@@ -180,18 +194,7 @@ class MainWindow(QMainWindow):
         self.uiMain.yslope_dbSpinBox.setValue(28694)
         self.uiMain.xsensor_dbSpinbox.setValue(27060)
         self.uiMain.ysensor_dbSpinBox.setValue(29743)
-        self.uiMain.zone_comboBox.addItems(["BT1", "BT2", "BT3", "BT4", "BT5", "BT6", "BT7", "BT8", "BT9", "BT10", "BT11", 
-                "BT12", "BT13", "BT14", "BT15", "BT16", "BT17", "BT18", "BT19", "BT20", "BT21", "BT22", "BT23", "BT24", 
-                "BT25", "BT26", "BT27a", "BT27b", "BT28", "BT29", "BT30a", "BT30b", "BT31", "BT32", "BT33", "BT34", 
-                "BT35", "BT36", "BT37" "BT38", "BT39", "BT40", "BT41", "BT42", "BT43", "BT44",
-
-                "JF1", "JF2a", "JF2b", "JF3a", "JF3b", "JF4", "JF5", "JF6a", "JF6b", "JF7", "JF8", "JF9", "JF10", "JF11",
-                "JF12", "JF13", "JF14", "JF15", "JF16", "JF17", "JF18", "JF19", "JF20", "JF21", "JF22", "JF23",
-
-                "KF1", "KF2", "KF3", "KF4", "KF5", "KF6", "KF7", "KF8", "KF9a", "KF9b",
-                
-                "OA1", "OA2", "OA3a", "OA3b", "OA4", "OA5", "OA6", "OA7", "OA8", "OA9", "OA10", "OA11", "OA12", "OA13",
-                "OA14a", "OA14b", "OA15", "OA16", "OA17", "OA18", "OA19a", "OA19b", "OA20", "OA21"])
+        self.uiMain.zone_comboBox.addItems(self.zone_ls)
 
     def display_results(self, values):
         try:
