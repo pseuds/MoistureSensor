@@ -83,8 +83,11 @@ class AMS(MainWindow):
         else:
             y_value = self.m * x_value + self.q
 
-        self.uiMain.fosResult_label.setText(self.make_bold_blue(str(round(y_value,3))))
-
+        alert_level = self.uiMain.alert_level_dbSpinBox.value()
+        if y_value > alert_level:
+            self.uiMain.fosResult_label.setText(self.make_bold_blue(str(round(y_value,3))))
+        else:
+            self.uiMain.fosResult_label.setText(self.make_bold_red(str(round(y_value,3))))
         pass
 
 

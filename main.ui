@@ -637,6 +637,42 @@ border: 0.5px solid rgb(210, 210, 210);</string>
              </property>
             </widget>
            </item>
+           <item>
+            <spacer name="horizontalSpacer_21">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>40</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+           <item>
+            <widget class="QLabel" name="label_17">
+             <property name="text">
+              <string>Alert Level</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <spacer name="horizontalSpacer_22">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>40</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+           <item>
+            <widget class="QDoubleSpinBox" name="alert_level_dbSpinBox"/>
+           </item>
           </layout>
          </item>
          <item>
@@ -1152,7 +1188,7 @@ border: 0.5px solid rgb(210, 210, 210);</string>
      <x>0</x>
      <y>0</y>
      <width>942</width>
-     <height>26</height>
+     <height>21</height>
     </rect>
    </property>
   </widget>

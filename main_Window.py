@@ -201,6 +201,10 @@ class MainWindow(QMainWindow):
         if align in ['left', 'right', 'center']:
             return f"<html><head/><body><p align=\"{align}\"><span style=\" font-weight:600; color:#0000ff;\">{text}</span></p></body></html>"
 
+    def make_bold_red(self, text, align='center'):
+        if align in ['left', 'right', 'center']:
+            return f"<html><head/><body><p align=\"{align}\"><span style=\" font-weight:600; color:#ff0000;\">{text}</span></p></body></html>"
+
     def open_folder(self):
         dir = self.source_folder if self.source_folder != "" else "/home"
         try:
