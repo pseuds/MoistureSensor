@@ -73,7 +73,7 @@ class AMS(MainWindow):
             self.uiMain.statusbar.showMessage("Open folder failed/cancelled.")
 
     def findFOSButton_clicked(self):
-        #Laze change name fa    
+        
         print(self.x1, self.x2, self.y1, self.y2)
         x_value = self.uiMain.inputVWC_dbSpinBox.value()
         if x_value <= self.x1:
