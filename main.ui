@@ -125,7 +125,7 @@
               </font>
              </property>
              <property name="text">
-              <string>Zone no.</string>
+              <string>Zone </string>
              </property>
             </widget>
            </item>
@@ -146,23 +146,11 @@
             </spacer>
            </item>
            <item>
-            <widget class="QSpinBox" name="zoneNo_spinBox">
-             <property name="minimumSize">
-              <size>
-               <width>55</width>
-               <height>0</height>
-              </size>
-             </property>
+            <widget class="QComboBox" name="zone_comboBox">
              <property name="font">
               <font>
                <pointsize>9</pointsize>
               </font>
-             </property>
-             <property name="minimum">
-              <number>1</number>
-             </property>
-             <property name="maximum">
-              <number>97</number>
              </property>
             </widget>
            </item>
