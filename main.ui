@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>942</width>
-    <height>693</height>
+    <height>711</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -635,6 +635,12 @@ border: 0.5px solid rgb(210, 210, 210);</string>
                <pointsize>9</pointsize>
               </font>
              </property>
+             <property name="maximum">
+              <double>1.000000000000000</double>
+             </property>
+             <property name="singleStep">
+              <double>0.050000000000000</double>
+             </property>
             </widget>
            </item>
            <item>
@@ -652,6 +658,11 @@ border: 0.5px solid rgb(210, 210, 210);</string>
            </item>
            <item>
             <widget class="QLabel" name="label_17">
+             <property name="font">
+              <font>
+               <pointsize>9</pointsize>
+              </font>
+             </property>
              <property name="text">
               <string>Alert Level</string>
              </property>
@@ -671,7 +682,13 @@ border: 0.5px solid rgb(210, 210, 210);</string>
             </spacer>
            </item>
            <item>
-            <widget class="QDoubleSpinBox" name="alert_level_dbSpinBox"/>
+            <widget class="QDoubleSpinBox" name="alert_level_dbSpinBox">
+             <property name="font">
+              <font>
+               <pointsize>9</pointsize>
+              </font>
+             </property>
+            </widget>
            </item>
           </layout>
          </item>
@@ -1188,7 +1205,7 @@ border: 0.5px solid rgb(210, 210, 210);</string>
      <x>0</x>
      <y>0</y>
      <width>942</width>
-     <height>21</height>
+     <height>26</height>
     </rect>
    </property>
   </widget>
