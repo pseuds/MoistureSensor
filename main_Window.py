@@ -86,6 +86,9 @@ class MainWindow(QMainWindow):
                         df_first6 = read_asc_to_dataframe(f"{self.source_folder}/{zone}/FOS/{fos}", first_6=True)
                         nrow = int(df_first6.loc[1,1])
                         ncol = int(df_first6.loc[0,1])
+                        if fos == f'{lower}_gapfill_24hr.asc':
+                            xslope = float(df_first6.loc[2,1])
+                            yslope = float(df_first6.loc[3,1])
 
                         fos_row_counts[fos] = nrow
                         fos_col_counts[fos] = ncol
@@ -126,6 +129,9 @@ class MainWindow(QMainWindow):
                         return 5, ''
                     
                     print("ALL good")
+
+                    self.uiMain.xslope_dbSpinBox.setValue(xslope)
+                    self.uiMain.yslope_dbSpinBox.setValue(yslope)
                     return 0, ''
                 
                 else: # if {zone} does not have both FOS or VWC
@@ -190,8 +196,10 @@ class MainWindow(QMainWindow):
         self.uiMain.find_point_Button.setEnabled(False)
 
         # set test values cuz lazy key in 
-        self.uiMain.xslope_dbSpinBox.setValue(24483)
-        self.uiMain.yslope_dbSpinBox.setValue(28694)
+        # self.uiMain.xslope_dbSpinBox.setValue(24483)
+        # self.uiMain.yslope_dbSpinBox.setValue(28694)
+        self.uiMain.xslope_dbSpinBox.setEnabled(False)
+        self.uiMain.yslope_dbSpinBox.setEnabled(False)
         self.uiMain.xsensor_dbSpinbox.setValue(27060)
         self.uiMain.ysensor_dbSpinBox.setValue(29743)
         self.uiMain.zone_comboBox.addItems(self.zone_ls)
@@ -248,7 +256,8 @@ class MainWindow(QMainWindow):
                 bad_file = self.VWC_required[code-1]
             elif code >= 19 and code < 22:
                 bad_file = self.FOS_required[code-19]
-            error_text = f"Calculation failed when reading {bad_file}." 
+            # error_text = f"Calculation failed when reading {bad_file}." 
+            error_text = "Zone and Coordinates of Slope do not match"
             error_MsgBox = QMessageBox(self)
             error_MsgBox.setWindowTitle("ERROR: Input File Error")
             error_MsgBox.setIcon(QMessageBox.Warning)

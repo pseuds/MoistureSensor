@@ -80,7 +80,7 @@ class AMS(MainWindow):
         x_value = self.uiMain.inputVWC_dbSpinBox.value()
         if x_value <= self.x1:
             y_value = self.y1
-        elif x_value >= 0.5:
+        elif x_value >= self.x2:
             y_value = self.y2
         else:
             y_value = self.m * x_value + self.q

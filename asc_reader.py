@@ -76,6 +76,7 @@ class Calculator(QObject):
             k = read_asc_to_dataframe(fos_path)
             try:
                 y = k.loc[row_svy, column_svy]
+                print("Y value", y, "row", row_svy, "col", column_svy)
                 extracted_y.append(y)
 
                 self.count += 1
@@ -176,7 +177,7 @@ class Calculator(QObject):
         print("X Values is", x_reg)
         self.finished.emit(0)
         # self.result_values.emit([m, q, x_1hr_mean, x_48hr_mean, extracted_y[0], end_y, r**2, X_avg])
-        self.result_values.emit([m, q, start_x, 0.5, start_y, end_y, r**2, X_avg])
+        self.result_values.emit([slope, intercept, start_x, 0.5, start_y, end_y, r**2, X_avg])
 
 
 
