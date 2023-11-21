@@ -128,23 +128,43 @@ class Calculator(QObject):
         print('FS(real-time) =', m, '* VWC(real-time) +', q)
 
         # Step 6: Plotting the regression line
-        x = [0.3, x_1hr_mean,x_24hr_mean,x_48hr_mean, 0.5,  0.6]
-        midpoint_y = m*0.5+q
-        y = [extracted_y[0]] + extracted_y + [midpoint_y]*2
+        # x = [0.3, x_1hr_mean,x_24hr_mean,x_48hr_mean, 0.5,  0.6]
+        x_reg = [x_1hr_mean,x_24hr_mean,x_48hr_mean]
+        y_reg = extracted_y
+        slope, intercept = np.polyfit(x_reg, y_reg, 1)
+        r = np.corrcoef(x_reg, y_reg)[0, 1]
+
+        start_y = np.max(y_reg)
+        start_x = (start_y - intercept)/slope
+        # start_x = slope*start_x + intercept
+        
+        end_y = slope*0.5+intercept
+        # y = [extracted_y[0]] + extracted_y + [midpoint_y]*2
+        # draw_x = [0.3, x_1hr_mean,x_24hr_mean,x_48hr_mean, 0.5,  0.6]
+        # draw_y = [extracted_y[0]] + extracted_y + [midpoint_y]*2
+        draw_x = [0.3, start_x, 0.5,  0.6]
+        draw_y = [start_y, start_y, end_y, end_y]
+
 
         # round values
-        x = [round(i, 3) for i in x]
-        y = [round(i, 3) for i in y]
+        x_reg = [round(i, 3) for i in x_reg]
+        y_reg = [round(i, 3) for i in y_reg]
+        draw_x = [round(i, 3) for i in draw_x]
+        draw_y = [round(i, 3) for i in draw_y]
 
-        r = np.corrcoef(x[1:4], y[1:4])[0, 1]
+        # r = np.corrcoef(x[1:4], y[1:4])[0, 1]
+        # r = np.corrcoef(x, y)[0, 1]
 
         matplotlib.use('agg') # only write to files; so it doesn't print user warning
 
         # plotting
         # from matplotlib import pyplot as plt
-        plt.plot(x,y, color = 'red', label = "Z line")
+        plt.scatter(x_reg, y_reg, color='blue', label='Data Points')
+        plt.plot(draw_x, draw_y, color = 'red', label = "Z line")
 
-        for i, j in zip(x, y):
+        # plt.plot(x, np.poly1d(np.polyfit(x, y, 1))(x), color='red', label='Regression Line')
+
+        for i, j in zip(x_reg, y_reg):
             plt.text(i, j, f'({i}, {j})', ha='right', va='bottom')
 
         # Set labels and title
@@ -153,7 +173,10 @@ class Calculator(QObject):
         plt.savefig('assets/Z_plot.png', format='png')
         plt.cla()
 
+        print("X Values is", x_reg)
         self.finished.emit(0)
-        self.result_values.emit([m, q, x_1hr_mean, x_48hr_mean, extracted_y[0], midpoint_y, r**2, X_avg])
+        # self.result_values.emit([m, q, x_1hr_mean, x_48hr_mean, extracted_y[0], end_y, r**2, X_avg])
+        self.result_values.emit([m, q, start_x, 0.5, start_y, end_y, r**2, X_avg])
+
 
 
