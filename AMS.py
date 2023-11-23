@@ -3,7 +3,7 @@ from main_Window import MainWindow
 from PyQt5 import QtCore, QtWidgets
 from PyQt5.QtCore import QObject, QThread, pyqtSignal
 from asc_reader import Calculator
-from progress_dialog import ProgressDialog
+from dialogs import ProgressDialog
 from PyQt5.QtGui import QPixmap
 
 #TODO Got some unknown property align whenever running the gui
@@ -14,10 +14,15 @@ class AMS(MainWindow):
         super(AMS, self).__init__(parent)
 
         # connect buttons
-        # self.uiMain.calculate_Button.clicked.connect(self.calculateButton_clicked)
         self.uiMain.calculate_Button.clicked.connect(self.calculateButton_clicked)
         self.uiMain.openFolder_Button.clicked.connect(self.openFolderButton_clicked)
         self.uiMain.find_point_Button.clicked.connect(self.findFOSButton_clicked)
+
+        # TODO NEW
+        self.uiMain.createSlope_Button.clicked.connect(self.createSlopeButton_clicked)
+        self.uiMain.deleteSensor_Button.clicked.connect(self.deleteSensorButton_clicked)
+        self.uiMain.loadSlope_Button.clicked.connect(self.loadSlopeButton_clicked)
+        self.uiMain.saveSensor_Button.clicked.connect(self.saveSensorButton_clicked)
 
         self.show()
 
@@ -65,14 +70,11 @@ class AMS(MainWindow):
             self.uiMain.statusbar.showMessage("Calculation failed. Missing input data.")
             self.dialog_bad_source_folder(fail, missing_file)
 
-    def openFolderButton_clicked(self):
-        success = self.open_folder()
+    def createSlopeButton_clicked(self):
+        pass
 
-        if success: 
-            self.uiMain.statusbar.showMessage("Open folder success.")
-            # TODO: check if required files exist
-        else:
-            self.uiMain.statusbar.showMessage("Open folder failed/cancelled.")
+    def deleteSensorButton_clicked(self):
+        pass
 
     def findFOSButton_clicked(self):
         
@@ -90,6 +92,21 @@ class AMS(MainWindow):
             self.uiMain.fosResult_label.setText(self.make_bold_blue(str(round(y_value,3))))
         else:
             self.uiMain.fosResult_label.setText(self.make_bold_red(str(round(y_value,3))))
+        pass
+
+    def loadSlopeButton_clicked(self):
+        pass
+
+    def openFolderButton_clicked(self):
+        success = self.open_folder()
+
+        if success: 
+            self.uiMain.statusbar.showMessage("Open folder success.")
+            # TODO: check if required files exist
+        else:
+            self.uiMain.statusbar.showMessage("Open folder failed/cancelled.")
+
+    def saveSensorButton_clicked(self):
         pass
 
 

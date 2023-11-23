@@ -15,7 +15,7 @@ class MainWindow(QMainWindow):
         self.uiMain.setupUi(self)
         self.resize(1000, 600)
         self.centerOnScreen()
-        self.setMaximumSize(1200, 800)
+        self.setMaximumSize(1200, 900)
 
         self.source_folder = ""    # root folder that the user chose to read from
         self.VWC_required = [ # all {zone} folders should have these
