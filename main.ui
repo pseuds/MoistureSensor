@@ -148,6 +148,36 @@ font-weight:500;</string>
          <string>Description</string>
         </property>
         <layout class="QGridLayout" name="gridLayout">
+         <item row="0" column="0">
+          <layout class="QHBoxLayout" name="horizontalLayout_10">
+           <item>
+            <widget class="QLabel" name="label_19">
+             <property name="font">
+              <font>
+               <pointsize>9</pointsize>
+              </font>
+             </property>
+             <property name="text">
+              <string>Slope Name</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLineEdit" name="slopeName_lineEdit"/>
+           </item>
+           <item>
+            <widget class="QPushButton" name="editSlopeName_Button">
+             <property name="text">
+              <string/>
+             </property>
+             <property name="icon">
+              <iconset>
+               <normaloff>assets/edit.png</normaloff>assets/edit.png</iconset>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
          <item row="2" column="0">
           <layout class="QHBoxLayout" name="horizontalLayout_11">
            <item>
@@ -310,25 +340,6 @@ font-weight:500;</string>
                <normaloff>assets/minus.png</normaloff>assets/minus.png</iconset>
              </property>
             </widget>
-           </item>
-          </layout>
-         </item>
-         <item row="0" column="0">
-          <layout class="QHBoxLayout" name="horizontalLayout_10">
-           <item>
-            <widget class="QLabel" name="label_19">
-             <property name="font">
-              <font>
-               <pointsize>9</pointsize>
-              </font>
-             </property>
-             <property name="text">
-              <string>Slope Name</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QLineEdit" name="slopeName_lineEdit"/>
            </item>
           </layout>
          </item>
@@ -1569,7 +1580,7 @@ padding: 5px 5px 5px 5px;</string>
      <x>0</x>
      <y>0</y>
      <width>1142</width>
-     <height>26</height>
+     <height>21</height>
     </rect>
    </property>
   </widget>

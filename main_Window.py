@@ -1,8 +1,8 @@
-import os, math
+import os, math, json
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import QUrl
 from PyQt5.QtGui import QPixmap
-from PyQt5.QtWidgets import QMainWindow, QDesktopWidget, QFileDialog, QMessageBox, QTableWidgetItem
+from PyQt5.QtWidgets import QMainWindow, QDesktopWidget, QFileDialog, QMessageBox, QListWidgetItem
 from PIL import Image
 from asc_reader import *
 from main_UI import Ui_MainWindow
@@ -44,10 +44,18 @@ class MainWindow(QMainWindow):
             "OA11", "OA12", "OA13", "OA14a", "OA14b", "OA15", "OA16", "OA17", "OA18", "OA19a", "OA19b", "OA20", 
             "OA21"
             ]
+
+        self.savelocation = "" # dir where the slope data is saved.
+        self.sensors_ls = []
+    
+        # dialogs
+        self.progress_bar = None
+        self.create_dialog = None
+
+        # modes
+        self.editSlopeName_mode = False
         
         self.initialise()
-    
-        self.progress_bar = None
 
 
     def centerOnScreen (self):
@@ -143,7 +151,7 @@ class MainWindow(QMainWindow):
             
         else: # user did not select source folder
             return 6, ''
-        
+
     def dialog_bad_source_folder(self, code, missing=''):
         if code == 1:
             error_text = f"The following file could not be found: {missing}.\n\nPlease make sure the source folder contain relevant .asc files."
@@ -183,6 +191,16 @@ class MainWindow(QMainWindow):
     def enable_findFromGraph(self):
         self.uiMain.inputVWC_dbSpinBox.setEnabled(True)
         self.uiMain.find_point_Button.setEnabled(True)
+    
+    def enable_sensorInputs(self, bool):
+        self.uiMain.zone_comboBox.setEnabled(bool)
+        self.uiMain.sensorName_lineEdit.setEnabled(bool)
+        self.uiMain.xsensor_dbSpinbox.setEnabled(bool)
+        self.uiMain.ysensor_dbSpinBox.setEnabled(bool)
+        self.uiMain.openFolder_Button.setEnabled(bool)
+        self.uiMain.calculate_Button.setEnabled(bool)
+        self.uiMain.saveSensor_Button.setEnabled(bool)
+        self.uiMain.deleteSensor_Button.setEnabled(bool)
 
     def get_sensorx(self): return self.uiMain.xsensor_dbSpinbox.value()
     def get_sensory(self): return self.uiMain.ysensor_dbSpinBox.value()
@@ -190,7 +208,12 @@ class MainWindow(QMainWindow):
     def get_slopey(self): return self.uiMain.yslope_dbSpinBox.value()
     def get_zone(self): return self.uiMain.zone_comboBox.currentText()
 
+    def get_slope_name(self): return self.uiMain.slopeName_lineEdit.text()
+
     def initialise(self):
+        # clear items
+        self.uiMain.sensors_listWidget.clear()
+
         # disable things from Find from Graph first
         self.uiMain.inputVWC_dbSpinBox.setEnabled(False)
         self.uiMain.find_point_Button.setEnabled(False)
@@ -204,11 +227,43 @@ class MainWindow(QMainWindow):
         self.uiMain.ysensor_dbSpinBox.setValue(29743)
         self.uiMain.zone_comboBox.addItems(self.zone_ls)
 
+        # cannot do anything until slope is created/loaded
+        self.set_editSlopeNameMode(False)
+        self.enable_sensorInputs(False)
+
+        # signals
+        self.uiMain.sensors_listWidget.currentItemChanged.connect(self.select_sensor)
+    
+    def delete_sensor(self):
+        if self.savelocation != "":
+            item = self.uiMain.sensors_listWidget.currentItem()
+
+            try:
+                # Opening JSON file
+                f = open(self.savelocation)
+                # returns JSON object as dict
+                data = json.load(f)
+                sensors_dict = data['sensors']
+                sensors_dict.pop(item.text())
+                data['sensors'] = sensors_dict
+                f.close()
+                with open(self.savelocation, "w") as outfile: 
+                    json.dump(data, outfile)
+
+            except Exception as e: # problem with JSON file.
+                print("Exception occurred when deleting sensor:", e)
+                self.uiMain.statusbar.showMessage("Error when deleting sensor.")
+                return
+
+            # delete from listwidget
+            self.uiMain.sensors_listWidget.takeItem(self.uiMain.sensors_listWidget.row(item))
+            
+
     def display_results(self, values):
         try:
             [self.m, self.q, self.x1, self.x2, self.y1, self.y2, rsquared, vwc] = [v for v in values]
         except Exception as e: # values is None if fails
-            print("Exception occurred when calculating.")
+            print("Exception occurred when calculating:", e)
             self.uiMain.statusbar.showMessage("Calculation failed. See console log for details.")
             self.dialog_failed_calc()
 
@@ -221,6 +276,36 @@ class MainWindow(QMainWindow):
         self.uiMain.graphResult_label.setPixmap(QPixmap("assets/Z_plot.png").scaled(1200, 500, QtCore.Qt.KeepAspectRatio, QtCore.Qt.SmoothTransformation))
         self.enable_findFromGraph()
 
+    def load_slope(self):
+        dir = self.savelocation if self.savelocation != "" else "/home"
+        try:
+            slope_path, file_type = QFileDialog.getOpenFileName(self, 'Open File', dir, 'JSON Files (*.json)')
+        except:
+            slope_path, file_type = QFileDialog.getOpenFileName(self, 'Open File', "/home", 'JSON Files (*.json)')
+
+        if slope_path == '':
+            print("Load cancelled.")
+            return 1
+        
+        else: # if valid path chosen
+            try:
+                self.savelocation = slope_path
+
+                # get slope name
+                f = open(self.savelocation)
+                data = json.load(f)
+                saved_name = data['slope_name']
+                f.close()
+
+                self.uiMain.slopeName_lineEdit.setText(saved_name)
+                self.uiMain.sensors_listWidget.clear()
+                self.set_sensorList()
+                self.enable_sensorInputs(True)
+                self.set_editSlopeNameMode(False)
+                return 0
+            except:
+                return 2
+        
     # to display aligned version of the text
     def make_align(self, text, align=None):
         if align in ['left', 'right', 'center']:
@@ -257,7 +342,7 @@ class MainWindow(QMainWindow):
             elif code >= 19 and code < 22:
                 bad_file = self.FOS_required[code-19]
             # error_text = f"Calculation failed when reading {bad_file}." 
-            error_text = "Zone and Coordinates of Slope do not match"
+            error_text = "Zone and Coordinates of Slope do not match."
             error_MsgBox = QMessageBox(self)
             error_MsgBox.setWindowTitle("ERROR: Input File Error")
             error_MsgBox.setIcon(QMessageBox.Warning)
@@ -280,7 +365,131 @@ class MainWindow(QMainWindow):
             self.progress_bar.ui.progressBar.setValue(int(math.ceil(count/self.total_count * 100)))
             self.progress_bar.ui.progress_label.setText(f"Calculating and plotting graph...")
 
+    def save_sensor(self, values):
+        if len(values) == 8 and self.savelocation != "":
+
+            [self.m, self.q, self.x1, self.x2, self.y1, self.y2, rsquared, vwc] = [v for v in values]
+
+            # Opening JSON file
+            f = open(self.savelocation)
+
+            # returns JSON object as dict
+            data = json.load(f)
+            sensors_dict = data['sensors']
+
+            sensors_dict[self.uiMain.sensorName_lineEdit.text()] = {
+                "coordinates": (self.get_sensorx(), self.get_sensory()),
+                "m": self.m,
+                "c": self.q,
+                "zone": self.get_zone()
+            }
+
+            data['sensors'] = sensors_dict
+
+            f.close()
+
+             # Convert and write JSON object to file
+            with open(self.savelocation, "w") as outfile: 
+                json.dump(data, outfile)    
+            
+            # if new sensor name not in list, add to listwidget
+            if not self.uiMain.sensorName_lineEdit.text() in [item.text() for item in [self.uiMain.sensors_listWidget.item(idx) for idx in range(self.uiMain.sensors_listWidget.count())]]:
+                new_item = QListWidgetItem(self.uiMain.sensorName_lineEdit.text())
+                self.uiMain.sensors_listWidget.addItem(new_item)
+                self.uiMain.sensors_listWidget.sortItems()
+                self.uiMain.sensors_listWidget.setCurrentItem(new_item)
+            else:
+                for item in [self.uiMain.sensors_listWidget.item(idx) for idx in range(self.uiMain.sensors_listWidget.count())]:
+                    if item.text() == self.uiMain.sensorName_lineEdit.text():
+                        self.uiMain.sensors_listWidget.setCurrentItem(item)
+    
+    def select_sensor(self):
+        if self.savelocation != "":
+            print("new sensor selected.")
+            print(self.uiMain.sensors_listWidget.currentItem().text())
+
+            selected_name = self.uiMain.sensors_listWidget.currentItem().text()
+
+            # get sensor data
+            f = open(self.savelocation)
+            data = json.load(f)
+            sensors_dict = data['sensors']
+            f.close()
+
+            data = sensors_dict[selected_name]
+            #     "coordinates": (self.get_sensorx(), self.get_sensory()),
+            #     "m": self.m,
+            #     "c": self.q,
+            #     "zone": self.get_zone()
+
+            try:
+                # update UI with sensor data
+                self.uiMain.sensorName_lineEdit.setText(selected_name)
+                self.uiMain.zone_comboBox.setCurrentText(data['zone'])
+                self.uiMain.xslope_dbSpinBox.setValue(0.00)
+                self.uiMain.yslope_dbSpinBox.setValue(0.00)
+                self.uiMain.xsensor_dbSpinbox.setValue(data['coordinates'][0])
+                self.uiMain.ysensor_dbSpinBox.setValue(data['coordinates'][1])
+                self.uiMain.gradientResult_label.setText(self.make_bold_blue(str(round(data['m'],3))))
+                self.uiMain.interceptResult_label.setText(self.make_bold_blue(str(round(data['c'],3))))
+                self.uiMain.r2Result_label.setText(self.make_bold_blue("-"))
+                self.uiMain.vwcResult_label.setText(self.make_bold_blue("-"))
+            except:
+                print("ERROR: Retrieving selected sensor data failed.")
+                self.uiMain.statusbar.showMessage("Error in retrieving selected sensor data.")
+
+    def set_editSlopeNameMode(self, bool):
+        self.editSlopeName_mode = bool
+        icon = QtGui.QIcon()
+        if bool:
+            # change icon to tick
+            icon.addPixmap(QtGui.QPixmap(".\\assets/tick.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        else:
+            # change icon to edit
+            icon.addPixmap(QtGui.QPixmap(".\\assets/edit.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+
+        self.uiMain.slopeName_lineEdit.setEnabled(bool)
+        self.uiMain.editSlopeName_Button.setIcon(icon)
+
+        # for init
+        if self.savelocation == "":
+            self.uiMain.editSlopeName_Button.setEnabled(False)
+        else:
+            self.uiMain.editSlopeName_Button.setEnabled(True)
+
+    def set_sensorList(self):
+        # Opening JSON file
+        if self.savelocation != "":
+            f = open(self.savelocation)
+
+            # returns JSON object as dict
+            data = json.load(f)
+            sensors_dict = data['sensors']
+            f.close()
+
+            sensor_names = sensors_dict.keys()
+            self.uiMain.sensors_listWidget.addItems(sensor_names)
+
+        
     def start_progress_dialog(self):
         if self.progress_bar != None:
             self.progress_bar.ui.progressBar.setValue(0)
             self.progress_bar.show()
+
+    def update_slope_name(self):
+        if self.savelocation != "":
+            # Opening JSON file
+            f = open(self.savelocation)
+
+            # returns JSON object as dict
+            data = json.load(f)
+            saved_name = data['slope_name']
+
+            if self.get_slope_name() != saved_name:
+                data['slope_name'] = self.get_slope_name()
+
+            f.close()
+
+             # Convert and write JSON object to file
+            with open(self.savelocation, "w") as outfile: 
+                json.dump(data, outfile)            
