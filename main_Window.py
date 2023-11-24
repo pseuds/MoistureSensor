@@ -143,7 +143,6 @@ class MainWindow(QMainWindow):
                     return 0, ''
                 
                 else: # if {zone} does not have both FOS or VWC
-                    print(JF_contents)
                     return 2, ''
                 
             else: # if source folder does not have zone
@@ -405,9 +404,6 @@ class MainWindow(QMainWindow):
     
     def select_sensor(self):
         if self.savelocation != "":
-            print("new sensor selected.")
-            print(self.uiMain.sensors_listWidget.currentItem().text())
-
             selected_name = self.uiMain.sensors_listWidget.currentItem().text()
 
             # get sensor data
@@ -417,10 +413,6 @@ class MainWindow(QMainWindow):
             f.close()
 
             data = sensors_dict[selected_name]
-            #     "coordinates": (self.get_sensorx(), self.get_sensory()),
-            #     "m": self.m,
-            #     "c": self.q,
-            #     "zone": self.get_zone()
 
             try:
                 # update UI with sensor data

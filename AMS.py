@@ -163,13 +163,8 @@ class AMS(MainWindow):
             self.uiMain.statusbar.showMessage("Open folder failed/cancelled.")
 
     def saveSensorButton_clicked(self):
-        print("self.uiMain.sensorName_lineEdit.text()")
-        print(self.uiMain.sensorName_lineEdit.text())
-        print(self.uiMain.sensorName_lineEdit.text() != "")
-        print(self.uiMain.sensorName_lineEdit.text().isspace())
         if self.uiMain.sensorName_lineEdit.text() != "" and not self.uiMain.sensorName_lineEdit.text().isspace():
             fail = self.calculateButton_clicked(save=True)
-            print(fail, ', calculate button funct done.')
             if not fail:
                 pass
             else: 
