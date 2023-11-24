@@ -1,5 +1,6 @@
 # MoistureSensor
-![Screenshot 2023-11-14 104128](https://github.com/pseuds/MoistureSensor/assets/112696906/ea92231c-d355-4516-962d-ca9425608d7e)
+![image](https://github.com/pseuds/MoistureSensor/assets/112696906/1f5e761b-d53f-4a46-b8f3-1875a4c91c90)
+
 ## Overview
  GUI for Slope Monitoring. <br><br>
 To execute, run the following in terminal:
