@@ -403,7 +403,7 @@ class MainWindow(QMainWindow):
                         self.uiMain.sensors_listWidget.setCurrentItem(item)
     
     def select_sensor(self):
-        if self.savelocation != "":
+        if self.savelocation != "" and self.uiMain.sensors_listWidget.currentItem() != None:
             selected_name = self.uiMain.sensors_listWidget.currentItem().text()
 
             # get sensor data
