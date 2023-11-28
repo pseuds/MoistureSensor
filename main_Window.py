@@ -401,6 +401,9 @@ class MainWindow(QMainWindow):
                 for item in [self.uiMain.sensors_listWidget.item(idx) for idx in range(self.uiMain.sensors_listWidget.count())]:
                     if item.text() == self.uiMain.sensorName_lineEdit.text():
                         self.uiMain.sensors_listWidget.setCurrentItem(item)
+            
+            self.uiMain.r2Result_label.setText(self.make_bold_blue(round(rsquared, 3)))
+            self.uiMain.vwcResult_label.setText(self.make_bold_blue(round(vwc, 3)))
     
     def select_sensor(self):
         if self.savelocation != "" and self.uiMain.sensors_listWidget.currentItem() != None:
